@@ -1,1 +1,4 @@
 node_modules
+
+config.private.json.txt
+config.private.json
