@@ -3,6 +3,9 @@
 var request = require('request');
 var base64 = require('base-64');
 
+
+//comes from pull_request.statuses_url;
+
 var currentSha = 'https://api.github.com/repos/pct-tr22/build1/statuses/8ab1b70968143f8fe2db0009d5a901b0c2b94b19';
 
 

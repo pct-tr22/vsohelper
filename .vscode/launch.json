@@ -30,7 +30,7 @@
 			"name": "Test1",
 			"type": "node",
 			"request": "launch",
-			"program": "./testvs.js",
+			"program": "./test1/gittest.js",
 			"stopOnEntry": false,
 			"args": [],
 			"cwd": ".",

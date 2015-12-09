@@ -6,8 +6,7 @@
     "start": "node ./bin/www",
     "nodemonl": "DEBUG=vsohelper:* nodemon ./bin/www",
     "nodemon": "SET DEBUG=vsohelper:* && nodemon ./bin/www",
-    "debug":"SET DEBUG=vsohelper:* && node ./bin/www"
-    
+    "debug": "SET DEBUG=vsohelper:* && node ./bin/www"
   },
   "dependencies": {
     "base-64": "^0.1.0",
@@ -16,7 +15,9 @@
     "debug": "~2.2.0",
     "ejs": "~2.3.3",
     "express": "~4.13.1",
+    "github": "^0.2.4",
     "morgan": "~1.6.1",
+    "pouchdb": "^5.1.0",
     "q": "^1.4.1",
     "request": "^2.67.0",
     "request-json": "^0.5.3",

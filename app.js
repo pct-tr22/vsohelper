@@ -9,6 +9,7 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var gitnotify = require('./routes/gitnotify');
+var vsostatus = require('./routes/vsostatus');
 
 var app = express();
 
@@ -28,6 +29,7 @@ app.use('/', routes);
 app.use('/users', users);
 
 app.use('/gitnotify', gitnotify);
+app.use('/vsostatus', vsostatus);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
