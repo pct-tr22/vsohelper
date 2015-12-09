@@ -15,6 +15,7 @@ var buildStatus = require('../model/buildstatus');
 
 router.post('/', function(req, res, next) {
 
+  //there's clearly more 'state' management to do; but illustrates the general flow.
   debug('got something.....');
   var body = req.body;
   var sha = req.body.pull_request.head.sha;
@@ -43,6 +44,7 @@ router.post('/', function(req, res, next) {
     buildStatus.save(vsoBuildInfo.id, prStatusesUrl);
 
     
+    debug('were done...  now set location and return');
     res.location(prStatusesUrl); //this should be some REST location for Me..
     return res.status(201).send('accepted...');
   })

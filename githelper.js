@@ -36,6 +36,10 @@ function getHeaders(){
 Git.prototype.setStatus = function(statusesUrl, statusType){
 
   debug('got a status update for ' + statusesUrl + ' to be set to ' + statusType);
+  
+  if ( !this.validateStatus(statusType))
+    throw new Error('invalid status type provided: ' + statusType);
+
   var currentUrl = statusesUrl;
   
   var data = {
@@ -75,6 +79,19 @@ Git.prototype.statusType = {
   success:"success",
   error:"error",
   failure:"failure"
+}
+
+Git.prototype.validateStatus = function(statusText){
+  switch (statusText) {
+    case "pending":
+    case "success":
+    case "error":
+    case "failure":
+    return true;
+    default:
+    debug('invalid status provided');
+    return false;
+  }
 }
 
 module.exports.Git = Git

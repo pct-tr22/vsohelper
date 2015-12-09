@@ -16,14 +16,17 @@ var buildStatus = require('../model/buildstatus');
 router.put('/:id', function(req, res, next){
   var buildId = req.params.id;
   debug('got an update for ' + buildId);
+  
   if ( ! req.body.status)
     return res.status(400).send('missing PUT json body with status');
 
   var buildinfo = buildStatus.get(buildId);
+  
   debug(buildinfo);
     
   var reqStatus = req.body.status;
   var statusUrl = buildinfo.statusUrl;
+  
   debug('will try to update: ' + statusUrl + '  to status of ' + reqStatus);
   
   gitHelper.setStatus(statusUrl, reqStatus);
