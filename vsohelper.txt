@@ -1,0 +1,41 @@
+VsoHelper Resonsibilities:
+
+1. Accept WebHook FROM GitHub
+    - repo / commit / branch information
+2. Trigger Build on VSO
+  
+3. Respond to Build Task for a specific build number/id - what's the "commit/repo/etc." that is used for a "Git pull"
+    -- this comes from the Build tasks as it needs to know what to Pull from Git
+
+4. Check status of build every X minutes
+
+5. Update GitHub with Status of Build (Pending, Success or Failure)
+  via Status Api
+  
+
+
+
+Build task Resonsibilities
+
+1. On start - call VsoHelelper to identify "what's my Repo info"
+  --- using this do a specific "git pull" for that commit.. 
+
+
+Alternative path:
+
+VSO Helper
+
+1. Accept WebHook on PR
+
+2a. Update Build Definition setting variables for http://stackoverflow.com/questions/3489173/how-to-clone-git-repository-with-specific-revision-changeset
+
+2b. Trigger Build on VSO
+
+4. Check status of build every X minutes
+
+5. Update GitHub with Status of Build (Pending, Success or Failure)
+  via Status Api
+
+
+Build Tasks
+Build task uses variables to identify the source repo/branch/commit and uses that for git.

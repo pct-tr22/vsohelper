@@ -5,9 +5,12 @@
 
 var fs = require('fs');
 
+//TODO: rename vso here to vsoagent or something...
 var vso = require('vso-node-api');
 var webapim = require('vso-node-api/WebApi');
 var Q = require('q');
+
+var buildModel = require('./model/builds');
 
 var _options
 
@@ -42,47 +45,103 @@ function init(){
  * 
  * 
  */
-Vso.prototype.doIt = function(){
+Vso.prototype.doIt = function(buildname){
+  
+  if (! buildname)
+    throw 'Missing build name';
+  
   var deferred = Q.defer();
   console.log('getting definitions');
-  
-  return _buildClient.getDefinitions('GeneralGit')
+   
+  return _buildClient.getDefinitions(_options.projectname)
     .then( function(foo){
   
-    var thing = {
-      id : foo[0].id,
-      name : foo[0].name,
-      url : foo[0].url,
-      projectId : foo[0].project.id
+    var builddef = search(buildname, foo);
+        
+    var buildInfo = {
+      id : builddef.id,
+      name : builddef.name,
+      url : builddef.url,
+      projectId : builddef.project.id
     }
     
-    return _buildClient.getDefinition(thing.id, thing.projectId)
-      .then(function(build){
+    return _buildClient.getDefinition(buildInfo.id, buildInfo.projectId)
+      .then(function(buildReference){
+        //console.log(buildReference);
         /// TODO: work out what the bug here is.. the call to queueBuild is nfg.
+        
         var sd = {
           "definition": {
-            "id": build.id
+            "id": buildReference.id
           },
             "sourceBranch": "master"
           }
         
-        return _buildClient.queueBuild(sd, build.project.name, true)
-          .then(function(something){
-            fs.writeFileSync('lastbuildrequest.json', JSON.stringify(something));  
-            deferred.resolve(something);
+        return _buildClient.queueBuild(sd, buildReference.project.name, true)
+          .then(function(queueRequest){
+            console.log('queued');
+            console.log(queueRequest.id)
+            buildModel.save(queueRequest);
+            //fs.writeFileSync(queueRequest.id + '.json', JSON.stringify(queueRequest));  
+            return queueRequest;//deferred.resolve(queueRequest);
           })
         })
       });
       
-    console.error('fell out');
+    console.error('fell out:doit');
     deferred.reject(new Error('vso helper fell out...'));
     
     return deferred.promise;
 }
+
+Vso.prototype.getBuildStatus = function(buildQueue){
+  var buildId;
+  
+  if (buildQueue === parseInt(buildQueue, 10))
+    buildId = buildQueue;
+  else //should check but not now..
+    buildId = buildQueue.id;
+  
+  var deferred = Q.defer();
+  
+  return _buildClient.getBuild(buildId.toString(), _options.projectname)
+    .then(function(buildStatus){
+      fs.writeFileSync('./data/' + buildId + '-stat' + '.json', JSON.stringify(buildStatus));
+      return buildStatus;//console.log(buildStatus);
+    });
+  
+  console.error('fell out:getstatus');
+  deferred.reject(new Error('vso helper fell out...'));
+  return deferred.promise;
+}
+
+
 
 Vso.prototype.log = function () {
   console.log(_options);
 };
 
 
+function search(nameKey, myArray){
+    for (var i=0; i < myArray.length; i++) {
+        if (myArray[i].name === nameKey) {
+            return myArray[i];
+        }
+    }
+}
+
+
 module.exports.Vso = Vso
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "debug": "DEBUG=vsohelper:* nodemon ./bin/www",
-    "debugw": "SET DEBUG=vsohelper:* && nodemon ./bin/www"
+    "nodemonl": "DEBUG=vsohelper:* nodemon ./bin/www",
+    "nodemon": "SET DEBUG=vsohelper:* && nodemon ./bin/www",
+    "debug":"SET DEBUG=vsohelper:* && node ./bin/www"
+    
   },
   "dependencies": {
     "base-64": "^0.1.0",
