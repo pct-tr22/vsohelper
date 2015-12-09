@@ -22,7 +22,7 @@ Failed:
   result 8
 
 
-Andy "dnoe" 
+Any "done" have a finish time, along with a status of 'status = 2' 
   "startTime": "2015-12-08T23:20:40.536Z",
   "finishTime": "2015-12-08T23:20:40.536Z",
   
