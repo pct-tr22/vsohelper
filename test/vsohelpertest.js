@@ -5,6 +5,7 @@ var should = chai.should();
 var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
+var expect = require('chai').expect;
 
 var Vso = require('../vsohelper').Vso;
 
@@ -15,7 +16,7 @@ describe('Vsohelper', function() {
 
   it('should just echo', function () {
       var opt = {
-        username:'foo', password:'bar', serverurl:'https://msn.com', projectname: 'GeneralGit'
+        username:'foo', password:'bar', serverurl:'https://msn.com', projectname: 'GeneralGit', buildname: 'foo'
         };
       var vsoHelper = new Vso(opt);
    });
@@ -24,15 +25,19 @@ describe('Vsohelper', function() {
     var vsoHelper = new Vso(vsoconfig);
   });
 
-  it('connect and not 401', function(done){
+  var lastBuild;
+
+  it('connect and queue a build', function(done){
     this.timeout(5000)
     var vsoHelper = new Vso(vsoconfig);
     
-    var p = vsoHelper.doIt();
+    var p = vsoHelper.doIt('gitlab1');
     
     p.then(function(result) {
       try {
           p.should.be.fulfilled;
+          lastBuild = result;
+          expect(result).to.have.property('id');
           done();
       }
       catch (e) {
@@ -42,6 +47,29 @@ describe('Vsohelper', function() {
         console.error('fail', error);
       });
   });
+
+  it('connect and get build status', function(done){
+    this.timeout(5000)
+    var vsoHelper = new Vso(vsoconfig);
+    expect(lastBuild).to.have.property('id');
+        
+    var p = vsoHelper.getBuildStatus(lastBuild);
+
+    p.then(function(result) {
+      try {
+          p.should.be.fulfilled;
+          expect(result).to.have.property('id');
+          done();
+      }
+      catch (e) {
+          done(e);
+      }
+      }).fail(function(error){
+        console.error('fail', error);
+      });
+    
+  });
+
 
 });
 
