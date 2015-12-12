@@ -1,9 +1,5 @@
-//Requirements
-// username, password, serverurl, 
-
-// build: buildid, branch, commithash
-
 var fs = require('fs');
+var debug = require('debug')('vsohelper:vsohelper');
 
 //TODO: rename vso here to vsoagent or something...
 var vso = require('vso-node-api');
@@ -45,7 +41,7 @@ function init(){
  * 
  * 
  */
-Vso.prototype.doIt = function(buildname){
+Vso.prototype.doIt = function(buildname, branch){
   
   if (! buildname)
     throw 'Missing build name';
@@ -56,8 +52,12 @@ Vso.prototype.doIt = function(buildname){
   return _buildClient.getDefinitions(_options.projectname)
     .then( function(foo){
   
+    debug('looking for build ' + buildname);
+      
     var builddef = search(buildname, foo);
-        
+    
+    debug('base branch  is: ' + branch);
+
     var buildInfo = {
       id : builddef.id,
       name : builddef.name,
@@ -74,7 +74,7 @@ Vso.prototype.doIt = function(buildname){
           "definition": {
             "id": buildReference.id
           },
-            "sourceBranch": "master"
+            "sourceBranch": branch
           }
         
         return _buildClient.queueBuild(sd, buildReference.project.name, true)
@@ -124,6 +124,7 @@ Vso.prototype.log = function () {
 
 function search(nameKey, myArray){
     for (var i=0; i < myArray.length; i++) {
+        debug('found build: ' + myArray[i].name);
         if (myArray[i].name === nameKey) {
             return myArray[i];
         }

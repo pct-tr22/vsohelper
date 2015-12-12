@@ -24,6 +24,7 @@ router.post('/', function(req, res, next) {
   var body = req.body;
   var sha = req.body.pull_request.head.sha;
   var prStatusesUrl = req.body.pull_request.statuses_url;
+  var branch = req.body.pull_request.base.ref;
 
   //TODO: replace with a model  
   fs.writeFileSync( './data/pr-' + sha + '.json', JSON.stringify(body));  
@@ -32,7 +33,7 @@ router.post('/', function(req, res, next) {
   var vsoHelper = new Vso(vsoconfig);
   debug('getting vsohelper');
   
-  var p = vsoHelper.doIt(vsoconfig.buildname);
+  var p = vsoHelper.doIt(vsoconfig.buildname, branch);
   debug('called vso helper');
   
   return p.then(function(vsoBuildInfo){
