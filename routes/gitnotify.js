@@ -5,6 +5,10 @@ var fs = require('fs');
 var Q = require('q');
 
 var Vso = require('../vsohelper').Vso;
+
+var vsoPrivate = './vso.private.json';
+var gitPrivate = './git.private.json';
+
 var vsoconfig = JSON.parse(fs.readFileSync('./vso.private.json', 'utf8'));
 
 var Git = require('../githelper').Git;

@@ -4,10 +4,16 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var debug = require('debug')('vsohelper:app');
+
+var fs = require('fs');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
+
+checkconfig();
+var gitsetup = require('./routes/gitsetup');
 var gitnotify = require('./routes/gitnotify');
 var vsostatus = require('./routes/vsostatus');
 
@@ -28,8 +34,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/users', users);
 
+
 app.use('/gitnotify', gitnotify);
 app.use('/vsostatus', vsostatus);
+app.use('/gitsetup', gitsetup);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -61,6 +69,31 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
+
+function checkconfig(){
+  var vsoPrivate = './vso.private.json';
+  var gitPrivate = './git.private.json';
+  debug('checking for config');
+  
+  if ( ! fs.existsSync(vsoPrivate)) {
+    debug('VSO config file doesn\'t exists creating a sample');
+    fs.writeFileSync(vsoPrivate, JSON.stringify({
+    "username": "YOUR VSO USERNAME",
+    "password": "YOUR VSO PASSWORD",
+    "serverurl": "https://YOUR VSO ACCOUNT.visualstudio.com/DefaultCollection",
+    "projectname": "TBD",
+    "buildname": "updatestatus"
+    }));
+  }
+  
+  if ( ! fs.existsSync(gitPrivate)) {
+    debug('GIT config file doesn\'t exists creating a sample');
+    fs.writeFileSync(gitPrivate,JSON.stringify( {
+    "username": "YOUR GITV USERNAME",
+    "password": "YOUR GIT PASSWORD",
+    }));
+  }
+}
 
 
 module.exports = app;
