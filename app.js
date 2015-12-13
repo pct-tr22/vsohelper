@@ -89,8 +89,8 @@ function checkconfig(){
   if ( ! fs.existsSync(gitPrivate)) {
     debug('GIT config file doesn\'t exists creating a sample');
     fs.writeFileSync(gitPrivate,JSON.stringify( {
-    "username": "YOUR GITV USERNAME",
-    "password": "YOUR GIT PASSWORD",
+    "username": "YOUR GIT USERNAME",
+    "password": "YOUR GIT PASSWORD OR PERSONAL ACCESS TOKEN",
     }));
   }
 }
