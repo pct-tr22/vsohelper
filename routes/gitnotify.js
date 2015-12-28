@@ -22,18 +22,27 @@ router.post('/', function(req, res, next) {
   //there's clearly more 'state' management to do; but illustrates the general flow.
   debug('got something.....');
   var body = req.body;
-  var sha = req.body.pull_request.head.sha;
-  var prStatusesUrl = req.body.pull_request.statuses_url;
-  var branch = req.body.pull_request.base.ref;
+/// TODO: make this more async. allow it to return faster and queue the 
+/// rest of the work for future.
+ 
+///TODO: refactor this to helper;;..
+  var prmodel = require('../model/prstatus');
 
-  //TODO: replace with a model  
-  fs.writeFileSync( './data/pr-' + sha + '.json', JSON.stringify(body));  
-  debug('writing file ' + sha);
+  var pullRequest = prmodel.parse(body);
+
+  if ( pullRequest === undefined)
+  {
+    debug('this is not a pull request... bailing');
+    return res.status(422).send('received but cannot process type...');    
+  }
+
+  var fileName = prmodel.save(pullRequest);
+  debug('writing file ' + fileName);
   
   var vsoHelper = new Vso(vsoconfig);
   debug('getting vsohelper');
   
-  var p = vsoHelper.doIt(vsoconfig.buildname, branch);
+  var p = vsoHelper.doIt(vsoconfig.buildname, pullRequest);
   debug('called vso helper');
   
   return p.then(function(vsoBuildInfo){
@@ -41,22 +50,22 @@ router.post('/', function(req, res, next) {
     //do something with the VSO build status...??
     debug('resolved the promise');
     debug('now calling git setting status to pending...')
-    gitHelper.setStatus(prStatusesUrl, gitHelper.statusType.pending);
+    gitHelper.setStatus(pullRequest.url, gitHelper.statusType.pending);
     debug('called git ... ')
     
     //At this point we have
     // VSO "build ID" - and Git PR status URL...
-    buildStatus.save(vsoBuildInfo.id, prStatusesUrl);
+    buildStatus.save(vsoBuildInfo.id, pullRequest.url);
 
     
     debug('were done...  now set location and return');
-    res.location(prStatusesUrl); //this should be some REST location for Me..
+    res.location(pullRequest.url); //this should be some REST location for Me..
     return res.status(201).send('accepted...');
   })
   .fail(function(err){
     debug('failed on the promise');
-    console.error('failed on the promise', error);
-    return res.status(500).send('error', { error: err })
+    console.error('failed on the promise', err);
+    return res.status(500).send( {'error': { error: err }})
   });
   
 });

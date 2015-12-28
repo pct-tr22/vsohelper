@@ -41,7 +41,7 @@ function init(){
  * 
  * 
  */
-Vso.prototype.doIt = function(buildname, branch){
+Vso.prototype.doIt = function(buildname, pullRequest){
   
   if (! buildname)
     throw 'Missing build name';
@@ -50,13 +50,18 @@ Vso.prototype.doIt = function(buildname, branch){
   console.log('getting definitions');
    
   return _buildClient.getDefinitions(_options.projectname)
-    .then( function(foo){
+    .then( function(defName){
   
     debug('looking for build ' + buildname);
       
-    var builddef = search(buildname, foo);
+    var builddef = search(buildname, defName);
     
-    debug('base branch  is: ' + branch);
+    debug('build id: ' + pullRequest.id);
+    debug('base branch is: ' + pullRequest.base.ref);
+    debug('base url: ' + pullRequest.base.url);
+    debug('base: ' + JSON.stringify(pullRequest.base));
+    debug('pr src: ' + JSON.stringify(pullRequest.head));
+        
 
     var buildInfo = {
       id : builddef.id,
@@ -74,7 +79,7 @@ Vso.prototype.doIt = function(buildname, branch){
           "definition": {
             "id": buildReference.id
           },
-            "sourceBranch": branch
+            "sourceBranch": pullRequest.base.ref
           }
         
         return _buildClient.queueBuild(sd, buildReference.project.name, true)
