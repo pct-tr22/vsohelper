@@ -60,8 +60,8 @@ Git.prototype.setStatus = function(statusesUrl, statusType){
   request(options, function (error, response, body) {
       if (! error && response.statusCode < 299 ){ // //&& response.statusCode == 200) {
          debug('completed call to git for status update... ')
-         debug(response.statusCode);
-         debug(response.body);
+         debug('status code response: ' + response.statusCode);
+         //debug(response.body);
       }
       else {
           debug('fell into else in githelper');
@@ -93,5 +93,8 @@ Git.prototype.validateStatus = function(statusText){
     return false;
   }
 }
+
+
+
 
 module.exports.Git = Git

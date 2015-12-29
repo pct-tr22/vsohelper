@@ -6,7 +6,7 @@ var BuildStatus = function(){}
 
 var getFilename = function(buildId){
   var name = './data/buildStatus-' + buildId + '.json';
-  debug('writing filename ' + name);
+  debug('filename ' + name);
   return './data/buildStatus-' + buildId + '.json';
 }
 
@@ -21,7 +21,14 @@ BuildStatus.prototype.save = function(buildId, statusUrl){
 BuildStatus.prototype.get = function(buildId){
   debug('reading file... ');
   var fileName = getFilename(buildId);
-  var buildStatus = JSON.parse(fs.readFileSync(fileName));
+  var buildStatus;
+  try {
+    buildStatus = JSON.parse(fs.readFileSync(fileName));
+  } catch (e) {
+    // Here you get the error when the file was not found,
+    // but you also get any other error
+    debug('some error occured reading file: ' + e);
+  }
   debug('done reading file...');
   return buildStatus;
 }

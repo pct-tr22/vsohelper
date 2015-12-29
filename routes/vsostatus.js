@@ -40,5 +40,14 @@ router.put('/', function(req, res, next){
   return res.status(500).send('error', { error: 'need to provide a buildid' });  
 });
 
+router.get('/:id', function(req, res, next){
+  debug('doing...');
+  var buildId = req.params.id;
+  debug('getting build info for ' + buildId);
+  var buildinfo = buildStatus.get(buildId);
+  debug('got file');
+  return res.status(200).send(buildinfo);
+  
+})
 
 module.exports = router;
