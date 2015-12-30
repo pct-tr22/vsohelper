@@ -22,10 +22,10 @@ router.post('/', function(req, res, next) {
   //there's clearly more 'state' management to do; but illustrates the general flow.
   debug('got something.....');
   var body = req.body;
-/// TODO: make this more async. allow it to return faster and queue the 
-/// rest of the work for future.
- 
-///TODO: refactor this to helper;;..
+  /// TODO: make this more async. allow it to return faster and queue the 
+  /// rest of the work for future.
+  
+  ///TODO: refactor this to helper;;..
   var prmodel = require('../model/prstatus');
 
   var pullRequest = prmodel.parse(body);
@@ -50,12 +50,12 @@ router.post('/', function(req, res, next) {
     //do something with the VSO build status...??
     debug('resolved the promise');
     debug('now calling git setting status to pending...')
-    gitHelper.setStatus(pullRequest.url, gitHelper.statusType.pending);
+    gitHelper.setStatus(pullRequest.statuses_url, gitHelper.statusType.pending);
     debug('called git ... ')
     
     //At this point we have
     // VSO "build ID" - and Git PR status URL...
-    buildStatus.save(vsoBuildInfo.id, pullRequest.url);
+    buildStatus.save(vsoBuildInfo.id, pullRequest);
 
     
     debug('were done...  now set location and return');

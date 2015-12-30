@@ -23,9 +23,10 @@ router.put('/:id', function(req, res, next){
   var buildinfo = buildStatus.get(buildId);
   
   debug(buildinfo);
-    
+
+  /// TODO: check for undefined...  
   var reqStatus = req.body.status;
-  var statusUrl = buildinfo.statusUrl;
+  var statusUrl = buildinfo.pullRequest.statuses_url;
   
   debug('will try to update: ' + statusUrl + '  to status of ' + reqStatus);
   
@@ -35,7 +36,6 @@ router.put('/:id', function(req, res, next){
 });
 
 router.put('/', function(req, res, next){
-  var buildId = req.params.id;
   debug('failure to provide a proper Uri / id');
   return res.status(500).send('error', { error: 'need to provide a buildid' });  
 });

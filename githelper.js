@@ -45,7 +45,7 @@ Git.prototype.setStatus = function(statusesUrl, statusType){
   var data = {
     "state": statusType, 
     "target_url": "https://example.com/build/status",
-    "description": "The is a status from TR... "
+    "description": "The is a status from TR... for  " + statusesUrl
   }
   
   // Configure the request
