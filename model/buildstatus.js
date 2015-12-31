@@ -10,9 +10,9 @@ var getFilename = function(buildId){
   return './data/buildStatus-' + buildId + '.json';
 }
 
-BuildStatus.prototype.save = function(buildId, statusUrl){
+BuildStatus.prototype.save = function(buildId, pullRequest){
   debug('writing file...');
-  var buildStatus = { 'buildId': buildId, 'statusUrl': statusUrl }
+  var buildStatus = { 'buildId': buildId, 'pullRequest': pullRequest }
   var fileName = getFilename(buildId);
   fs.writeFileSync(fileName, JSON.stringify(buildStatus)); 
   debug('done writing file... ');

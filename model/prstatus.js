@@ -42,6 +42,7 @@ PullStatus.prototype.parse = function(gitPullRequest){
     url: root.url,
     branch : root.base.ref,    
     sha: root.head.sha,
+    statuses_url : root.statuses_url,
     head : {
       label : root.head.label,
       ref : root.head.ref,
