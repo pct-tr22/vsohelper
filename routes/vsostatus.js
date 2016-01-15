@@ -45,6 +45,10 @@ router.get('/:id', function(req, res, next){
   var buildId = req.params.id;
   debug('getting build info for ' + buildId);
   var buildinfo = buildStatus.get(buildId);
+  //TODO: hack to shove origin here...
+  debug('hack for origin on git before info: ' + buildinfo.pullRequest.base.ref);
+  buildinfo.pullRequest.base.ref = 'origin/' + buildinfo.pullRequest.base.ref
+  debug('new info: ' + buildinfo.pullRequest.base.ref);
   debug('got file');
   return res.status(200).send(buildinfo);
   
